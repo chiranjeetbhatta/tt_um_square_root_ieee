@@ -2,19 +2,18 @@ module sqrt8 (
     input  wire clk,
     input  wire reset,
     input  wire start,
-    input  wire [7:0] data_in,   // Integer input
-    output reg  [7:0] data_out,  // Q4.4 Fixed-point output
+    input  wire [7:0] data_in,   
+    output reg  [7:0] data_out,  
     output reg  done
 );
 
-    // Internal registers
-    reg [15:0] tmp;      // Input padded with 8 zeros for 4 fractional bits
-    reg [15:0] rem;    // Remainder
-    reg [7:0]  q;      // Result accumulator
-    reg [3:0] i;
+    reg [15:0] tmp;      
+    reg [15:0] rem;    
+    reg [7:0]  q;      
+    reg [3:0]  i; // Changed from integer to reg for GLS stability
 
-   reg [1:0] state;
-   localparam IDLE=0, CALC=1, FINISH=2;
+    reg [1:0] state;
+    localparam IDLE=0, CALC=1, FINISH=2;
 
     always @(posedge clk) begin
         if (reset) begin
@@ -30,19 +29,17 @@ module sqrt8 (
                 IDLE: begin
                     done <= 1'b0;
                     if (start) begin
-                        // Pad 8-bit input with 8 zeros for Q4.4 output
-                        tmp     <= {data_in, 8'b0}; 
+                        tmp   <= {data_in, 8'b0}; 
                         rem   <= 16'b0;
                         q     <= 8'b0;
-                        i     <= 7; // 8 iterations for 8-bit result
+                        i     <= 7; 
                         state <= CALC;
                     end
                 end
 
                 CALC: begin
-                    // Non-restoring / Digit-by-digit algorithm logic
-                    if (i >= 0) begin
-                        // Test subtraction for the next bit
+                    // Check i strictly using defined widths
+                    if (i != 4'hF) begin // Using 4'hF as the "underflow" marker (7 down to 0)
                         if ((rem << 2 | tmp >> 14) >= (q << 2 | 1)) begin
                             rem <= (rem << 2 | tmp >> 14) - (q << 2 | 1);
                             q   <= (q << 1 | 1);
@@ -51,7 +48,7 @@ module sqrt8 (
                             q   <= (q << 1);
                         end
                         tmp <= tmp << 2;
-                        i <= i - 1;
+                        i   <= i - 1;
                     end else begin
                         state <= FINISH;
                     end
@@ -62,6 +59,8 @@ module sqrt8 (
                     done     <= 1'b1;
                     state    <= IDLE;
                 end
+                
+                default: state <= IDLE;
             endcase
         end
     end
