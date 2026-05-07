@@ -8,7 +8,7 @@ module sqrt8 (
 );
 
     // Internal registers
-    reg [15:0] x;      // Input padded with 8 zeros for 4 fractional bits
+    reg [15:0] tmp;      // Input padded with 8 zeros for 4 fractional bits
     reg [15:0] rem;    // Remainder
     reg [7:0]  q;      // Result accumulator
     integer i;
@@ -27,7 +27,7 @@ module sqrt8 (
                     done <= 1'b0;
                     if (start) begin
                         // Pad 8-bit input with 8 zeros for Q4.4 output
-                        x     <= {data_in, 8'b0}; 
+                        tmp     <= {data_in, 8'b0}; 
                         rem   <= 16'b0;
                         q     <= 8'b0;
                         i     <= 7; // 8 iterations for 8-bit result
@@ -39,14 +39,14 @@ module sqrt8 (
                     // Non-restoring / Digit-by-digit algorithm logic
                     if (i >= 0) begin
                         // Test subtraction for the next bit
-                        if ((rem << 2 | x >> 14) >= (q << 2 | 1)) begin
-                            rem <= (rem << 2 | x >> 14) - (q << 2 | 1);
+                        if ((rem << 2 | tmp >> 14) >= (q << 2 | 1)) begin
+                            rem <= (rem << 2 | tmp >> 14) - (q << 2 | 1);
                             q   <= (q << 1 | 1);
                         end else begin
-                            rem <= (rem << 2 | x >> 14);
+                            rem <= (rem << 2 | tmp >> 14);
                             q   <= (q << 1);
                         end
-                        x <= x << 2;
+                        tmp <= tmp << 2;
                         i <= i - 1;
                     end else begin
                         state <= FINISH;
