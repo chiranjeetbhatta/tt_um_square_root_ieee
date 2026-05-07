@@ -11,7 +11,7 @@ module sqrt8 (
     reg [15:0] tmp;      // Input padded with 8 zeros for 4 fractional bits
     reg [15:0] rem;    // Remainder
     reg [7:0]  q;      // Result accumulator
-    integer i;
+    reg [3:0] i;
 
    reg [1:0] state;
    localparam IDLE=0, CALC=1, FINISH=2;
@@ -21,6 +21,10 @@ module sqrt8 (
             state    <= IDLE;
             data_out <= 8'b0;
             done     <= 1'b0;
+            tmp      <= 16'b0;
+            rem      <= 16'b0;
+            q        <= 8'b0;
+            i        <= 4'b0; // Explicitly reset the counter
         end else begin
             case (state)
                 IDLE: begin
