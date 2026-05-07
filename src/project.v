@@ -20,7 +20,7 @@ module tt_um_sqrt8_ieee (
     assign uio_out[6:0] = 0;
     assign uio_oe[0]  = 0;// input-start signal
     assign uio_oe[7]  = 1;// output-done signal
-    
+    assign uio_oe[6:1]=6'b000000;
   // List all unused inputs to prevent warnings
     wire _unused = &{ena, uio_in[7],uio_in[6],uio_in[5],uio_in[4],uio_in[3],uio_in[2],uio_in[1],1'b0};
 
