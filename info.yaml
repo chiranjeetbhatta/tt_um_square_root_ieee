@@ -1,6 +1,6 @@
 # Tiny Tapeout project information
 project:
-  title:        "A simple 8-bit square root calculator"      # Project title
+  title:        "A simple 8-bit square root calculator."      # Project title
   author:       "Chiranjeet Bhattacharjee, Himadri Ghosh, Aditya Panigrahi, Debaditya Dasgupta, Subir Kr. Maity"      # Your name
   discord:      ""      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
   description:  "Calculates the square root of an 8-bit unsigned integer using the non-restoring algorithm. The output is provided in Q4.4 fixed-point format, allowing for fractional precision."      # One line description of what your project does
