@@ -17,9 +17,9 @@ module tt_um_sqrt8_ieee (
 );
 
   // All output pins must be assigned. If not used, assign to 0.
-    assign uio_out = 0;
-    assign uio_oe  = 0;// input-start signal
-   
+    assign uio_out[7:1] = 0;
+    assign uio_oe[7:1]  = 0;// input-start signal
+    assign uio_oe[0] = 1;//done signal as output
   // List all unused inputs to prevent warnings
     wire _unused = &{ena, uio_in[7],uio_in[6],uio_in[5],uio_in[4],uio_in[3],uio_in[2],uio_in[1],1'b0};
 
@@ -29,7 +29,7 @@ module tt_um_sqrt8_ieee (
         .start(uio_in[0]),
         .data_in(ui_in),   // Integer input
         .data_out(uo_out),  // Q4.4 Fixed-point output
-        .done()
+        .done(uio_out[0])
 );
 
 endmodule
